@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import moment from 'moment'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -60,7 +60,7 @@ export function ExpenseManagerComponent() {
     const startDay = currentMonth.clone().startOf('month').startOf('week')
     const endDay = currentMonth.clone().endOf('month').endOf('week')
     const days = []
-    let day = startDay.clone()
+    const day = startDay.clone()
 
     while (day.isSameOrBefore(endDay, 'day')) {
       days.push(day.clone())
