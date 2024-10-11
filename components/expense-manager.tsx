@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import moment from 'moment'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -30,7 +31,7 @@ export function ExpenseManagerComponent() {
 
   // Function to add a new expense
   const addExpense = (newExpense: Omit<Expense, 'id'>) => {
-    setExpenses([...expenses, { ...newExpense, id: Date.now().toString() }])
+    setExpenses([...expenses, { ...newExpense, id: uuidv4() }])
     setIsAddingExpense(false)
     setCategory('')
   }
