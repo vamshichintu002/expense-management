@@ -77,63 +77,66 @@ export function ExpenseManagerComponent() {
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Expense Manager</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card>
+    <div className="container mx-auto p-4 max-w-7xl">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center">Expense Manager</h1>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card className="lg:col-span-1">
           <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle>{currentMonth.format('MMMM YYYY')}</CardTitle>
-              <div>
-                <Button onClick={() => navigateMonth('prev')} className="mr-2">Previous</Button>
-                <Button onClick={() => navigateMonth('next')}>Next</Button>
+            <div className="flex flex-col sm:flex-row justify-between items-center">
+              <CardTitle className="mb-2 sm:mb-0">{currentMonth.format('MMMM YYYY')}</CardTitle>
+              <div className="flex space-x-2">
+                <Button onClick={() => navigateMonth('prev')} size="sm">Previous</Button>
+                <Button onClick={() => navigateMonth('next')} size="sm">Next</Button>
               </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-1 text-sm md:text-base">
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center font-bold p-2">{day}</div>
+                <div key={day} className="text-center font-bold p-1 md:p-2">{day}</div>
               ))}
               {generateCalendarDays().map(day => (
                 <div
                   key={day.format('YYYY-MM-DD')}
-                  className={`p-2 border text-center cursor-pointer ${
+                  className={`p-1 md:p-2 border text-center cursor-pointer ${
                     day.isSame(selectedDate, 'day') ? 'bg-primary text-primary-foreground' : ''
                   } ${!day.isSame(currentMonth, 'month') ? 'text-muted-foreground' : ''}`}
                   onClick={() => setSelectedDate(day.toDate())}
                 >
                   {day.format('D')}
                   {getExpensesForDate(day.toDate()).length > 0 && (
-                    <div className="w-2 h-2 bg-red-500 rounded-full mx-auto mt-1"></div>
+                    <div className="w-1 h-1 md:w-2 md:h-2 bg-red-500 rounded-full mx-auto mt-1"></div>
                   )}
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle>Daily Expenses</CardTitle>
           </CardHeader>
           <CardContent>
-            <h3 className="text-lg font-semibold mb-2">
+            <h3 className="text-lg font-semibold mb-4">
               {moment(selectedDate).format('MMMM D, YYYY')}
             </h3>
-            {getExpensesForDate(selectedDate).map(expense => (
-              <div key={expense.id} className="mb-2 p-2 border rounded">
-                <p>{expense.description} - ${expense.amount}</p>
-                <p className="text-sm text-gray-500">Paid by: {expense.paymentMode}</p>
-                <Button variant="destructive" size="sm" onClick={() => deleteExpense(expense.id)}>
-                  Delete
-                </Button>
-              </div>
-            ))}
+            <div className="space-y-4 max-h-64 overflow-y-auto mb-4">
+              {getExpensesForDate(selectedDate).map(expense => (
+                <div key={expense.id} className="p-3 border rounded shadow-sm">
+                  <p className="font-semibold">{expense.description} - ${expense.amount.toFixed(2)}</p>
+                  <p className="text-sm text-gray-500">Paid by: {expense.paymentMode}</p>
+                  <p className="text-sm text-gray-500">Category: {expense.category}</p>
+                  <Button variant="destructive" size="sm" onClick={() => deleteExpense(expense.id)} className="mt-2">
+                    Delete
+                  </Button>
+                </div>
+              ))}
+            </div>
             <Dialog open={isAddingExpense} onOpenChange={setIsAddingExpense}>
               <DialogTrigger asChild>
-                <Button className="mt-2">Add Expense</Button>
+                <Button className="w-full">Add Expense</Button>
               </DialogTrigger>
-              <DialogContent>
+              <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                   <DialogTitle>Add New Expense</DialogTitle>
                 </DialogHeader>
@@ -205,21 +208,23 @@ export function ExpenseManagerComponent() {
           </CardContent>
         </Card>
       </div>
-      <Card className="mt-4">
+      <Card className="mt-6">
         <CardHeader>
           <CardTitle>Monthly Report</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={getMonthlyReportData()}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="total" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div className="h-[300px] sm:h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={getMonthlyReportData()}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="total" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </CardContent>
       </Card>
     </div>
